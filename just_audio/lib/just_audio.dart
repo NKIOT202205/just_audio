@@ -3866,7 +3866,6 @@ String _getResponseMimeType(Uri uri, HttpClientResponse response) {
       '.m3u': 'audio/x-mpegurl',
     };
     // Default to 'audio/mpeg'
-    print(p.extension(uri.path).toLowerCase());
     final mimeType =
         mimeTypes[p.extension(uri.path).toLowerCase()] ?? 'audio/mpeg';
     return mimeType;
