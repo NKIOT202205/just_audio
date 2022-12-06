@@ -1476,6 +1476,10 @@ class AudioPlayer {
       await file.delete(recursive: true);
     }
   }
+
+  static Future<Directory> getAssetCacheDirectory() async {
+    return await _getCacheDir();
+  }
 }
 
 /// Captures the details of any error accessing, loading or playing an audio
