@@ -2834,7 +2834,7 @@ class LockCachingAudioSource extends StreamAudioSource {
     final sink = (await _partialCacheFile).openWrite();
     final sourceLength =
         response.contentLength == -1 ? null : response.contentLength;
-    final mimeType = response.headers.contentType.toString();
+    final mimeType = _getResponseMimeType(uri, response);
     final acceptRanges = response.headers.value(HttpHeaders.acceptRangesHeader);
     final originSupportsRangeRequests =
         acceptRanges != null && acceptRanges != 'none';
@@ -3846,4 +3846,30 @@ HttpClient _createHttpClient({String? userAgent}) {
     client.userAgent = userAgent;
   }
   return client;
+}
+
+String _getResponseMimeType(Uri uri, HttpClientResponse response) {
+  final contentType = response.headers.contentType;
+  if (contentType.toString() == ContentType.binary.toString()) {
+    const mimeTypes = {
+      '.aac': 'audio/aac',
+      '.mp3': 'audio/mpeg',
+      '.ogg': 'audio/ogg',
+      '.opus': 'audio/opus',
+      '.wav': 'audio/wav',
+      '.weba': 'audio/webm',
+      '.mp4': 'audio/mp4',
+      '.m4a': 'audio/mp4',
+      '.aif': 'audio/x-aiff',
+      '.aifc': 'audio/x-aiff',
+      '.aiff': 'audio/x-aiff',
+      '.m3u': 'audio/x-mpegurl',
+    };
+    // Default to 'audio/mpeg'
+    print(p.extension(uri.path).toLowerCase());
+    final mimeType =
+        mimeTypes[p.extension(uri.path).toLowerCase()] ?? 'audio/mpeg';
+    return mimeType;
+  }
+  return contentType.toString();
 }
