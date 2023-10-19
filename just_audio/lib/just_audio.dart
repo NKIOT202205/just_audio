@@ -826,6 +826,9 @@ class AudioPlayer {
       checkInterruption();
       source._shuffle(initialIndex: initialSeekValues?.index ?? 0);
       _broadcastSequence();
+      // https://github.com/ryanheise/just_audio/issues/594#issuecomment-1087495241
+      // 解决在后台时间长不播放音频的问题
+      _proxy.start();
       _durationFuture = platform
           .load(LoadRequest(
             audioSourceMessage: source._toMessage(),
